@@ -16,7 +16,6 @@ const Restaurant = () => {
                 {login ? "Switch to Signup" : "Switch to Login"}
             </button>        
             {login ? <RestaurantLogin /> : <RestaurantSignup />}
-    
             <Footer />        
         </div>
     );
