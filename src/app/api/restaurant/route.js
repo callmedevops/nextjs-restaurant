@@ -23,7 +23,6 @@ export async function POST(request) {
     if (exists) {
       return NextResponse.json({ error: "Email already exists" }, { status: 400 });
     }
-
     let newRestaurant = new restaurantSchema(payload);
     const result = await newRestaurant.save();
     return NextResponse.json({ result, message: "Successfully registered" });
