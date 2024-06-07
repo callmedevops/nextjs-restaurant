@@ -7,7 +7,6 @@ export async function GET() {
   try {
     await mongoose.connect(connectionStr);
     const data = await restaurantSchema.find();
-    console.log(data);
     return NextResponse.json({ data });
   } catch (error) {
     console.log("Error connecting to MongoDB:", error);
