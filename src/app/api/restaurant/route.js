@@ -18,8 +18,7 @@ export async function POST(request) {
   let payload = await request.json();
   let result;
   let success=false
-  await mongoose.connect(connectionStr, { useNewUrlParser: true })
-
+  await mongoose.connect(connectionStr)
   if (payload.login) {
       result = await restaurantSchema.findOne({ email: payload.email, password: payload.password })
       if(result){
