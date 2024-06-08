@@ -3,9 +3,9 @@ const {default: mongoose} = require("mongoose");
 const restaurantModel = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    restaurantName: String,
-    address: String,
-    contact: String,
+    restaurantName: { type: String, required: true },
+    address: { type: String, required: true },
+    contact: { type: String, required: true },
 });
 
 

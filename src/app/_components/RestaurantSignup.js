@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation' // Corrected the import from "next/navigation" to "next/router"
 
 const RestaurantSignup = () => {
     const [formData, setFormData] = useState({
@@ -17,9 +17,11 @@ const RestaurantSignup = () => {
     useEffect(() => {
         setIsVisible(true);
     }, []);
+
     const validateEmail = (email) => {
         return email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     };
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData(prevData => ({
@@ -30,9 +32,12 @@ const RestaurantSignup = () => {
 
     const handleSignup = async (event) => {
         event.preventDefault();
-
         const { email, password, confirmPassword, restaurantName, address, contact } = formData;
 
+        if (!email || !password || !confirmPassword || !restaurantName || !address || !contact) {
+            setErrorMessage('All fields are required.');
+            return;
+        }
         if (!validateEmail(email)) {
             setErrorMessage('Please enter a valid email address.');
             return;
@@ -45,17 +50,23 @@ const RestaurantSignup = () => {
             setErrorMessage('Password must be at least 8 characters long.');
             return;
         }
-        const response = await fetch('/api/restaurant', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, restaurantName, address, contact })
-        });
+        try {
+            let response = await fetch('/api/restaurant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, restaurantName, address, contact })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to create restaurant. Please try again.');
+            }
 
-        const result = await response.json();
+            response = await response.json();
 
-        if (result.error) {
-            setErrorMessage(result.error);
-        } else {
+            if (response.error) {
+                setErrorMessage(result.error);
+                return;
+            }
+            const { result } = response;
             delete result.password;
             const dataToStore = {
                 ...result,
@@ -63,6 +74,8 @@ const RestaurantSignup = () => {
             };
             localStorage.setItem("restaurantUser", JSON.stringify(dataToStore));
             router.push('/restaurant/dashboard');
+        } catch (error) {
+            setErrorMessage(error.message || 'An unexpected error occurred');
         }
     };
     return (
@@ -80,6 +93,7 @@ const RestaurantSignup = () => {
                             onChange={handleChange}
                             name={key}
                             autoComplete="off"
+                            required
                         />
                     </div>
                 ))}

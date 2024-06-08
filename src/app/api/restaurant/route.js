@@ -15,19 +15,23 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  try {
-    await mongoose.connect(connectionStr);
-    let payload = await request.json();
-    const exists = await restaurantSchema.findOne({ email: payload.email });
+  let payload = await request.json();
+  let result;
+  let success=false
+  await mongoose.connect(connectionStr, { useNewUrlParser: true })
 
-    if (exists) {
-      return NextResponse.json({ error: "Email already exists" }, { status: 400 });
-    }
-    let newRestaurant = new restaurantSchema(payload);
-    const result = await newRestaurant.save();
-    return NextResponse.json({ result, message: "Successfully registered" });
-  } catch (error) {
-    console.log("Error connecting to MongoDB:", error);
-    return NextResponse.json({ error: "Failed to post into MongoDB" }, { status: 500 });
+  if (payload.login) {
+      result = await restaurantSchema.findOne({ email: payload.email, password: payload.password })
+      if(result){
+          success=true
+      }
+  } else {
+      const restaurant = new restaurantSchema(payload)
+      result = await restaurant.save();
+      if(result){
+          success=true;
+      }
   }
+
+  return NextResponse.json({ result, success })
 }
