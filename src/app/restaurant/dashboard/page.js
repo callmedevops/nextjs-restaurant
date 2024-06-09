@@ -1,15 +1,19 @@
-import Footer from "@/app/_components/Footer";
+"use client"
 import RestaurantHeader from "@/app/_components/RestaurantHeader";
-import "./../style.css";
-const DashboardPage = () => {
-    return (
-        <div>
+import './../style.css'
+import AddFoodItems from "@/app/_components/AddFoodItem";
+import { useState } from "react";
+import FoodItemList from "@/app/_components/FoodItemList";
+const Dashboard = () => {
+    const [addItem, setAddItem] = useState(false)
+    return (<div>
         <RestaurantHeader />
-        <h1>Welcome to dashboard</h1>
-        <Footer />
-        </div>
-    );
-    }
+        <button onClick={() => setAddItem(true)}>Add Food </button>
+        <button onClick={() => setAddItem(false)}>Dashboard</button>
+        {
+            addItem ? <AddFoodItems setAddItem={setAddItem} /> : <FoodItemList />
+        }
+    </div>)
+}
 
-
-export default DashboardPage;
+export default Dashboard;
