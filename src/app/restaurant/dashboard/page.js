@@ -4,6 +4,7 @@ import './../style.css'
 import AddFoodItems from "@/app/_components/AddFoodItem";
 import { useState } from "react";
 import FoodItemList from "@/app/_components/FoodItemList";
+import 'bootstrap/dist/css/bootstrap.min.css';
 const Dashboard = () => {
     const [addItem, setAddItem] = useState(false)
     return (<div>

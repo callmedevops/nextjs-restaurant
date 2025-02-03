@@ -3,71 +3,72 @@ import { useEffect, useState } from "react";
 
 const FoodItemList = () => {
     const [foodItems, setFoodItems] = useState();
-    const router=useRouter()
+    const router = useRouter();
 
     useEffect(() => {
         loadFoodItems();
     }, []);
 
     const loadFoodItems = async () => {
-        const restaurantData= JSON.parse(localStorage.getItem('restaurantUser'));
-        const resto_id= restaurantData._id;
-        let response = await fetch("/api/restaurant/foods/"+resto_id);
+        const restaurantData = JSON.parse(localStorage.getItem('restaurantUser'));
+        const resto_id = restaurantData._id;
+        let response = await fetch("/api/restaurant/foods/" + resto_id);
         response = await response.json();
         if (response.success) {
-            setFoodItems(response.result)
+            setFoodItems(response.result);
         } else {
-            alert("food item list not loading")
+            alert("Food item list not loading");
         }
+    };
 
-    }
-
-    const deleteFoodItem=async(id)=>{
-        let response = await fetch('/api/restaurant/foods/'+id,{
-            method:'delete'
+    const deleteFoodItem = async (id) => {
+        let response = await fetch('/api/restaurant/foods/' + id, {
+            method: 'delete'
         });
         response = await response.json();
-        if(response.success){
+        if (response.success) {
             loadFoodItems();
-        }else{
-            alert("food item not deleted")
+        } else {
+            alert("Food item not deleted");
         }
-    }
+    };
 
-
-    return (<div>
-        <h1>Food Items</h1>
-        <table>
-            <thead>
-                <tr>
-                    <td>S.N</td>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Description</td>
-                    <td>Image</td>
-                    <td>Operations</td>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                 foodItems &&  foodItems.map((item,key)=>(
-                        <tr key={key}>
-                        <td>{key+1}</td>
-                        <td>{item.name}</td>
-                        <td>{item.price}</td>
-                        <td>{item.description}</td>
-                        <td><img src={item.img_path} /> </td>
-                        <td><button onClick={()=>deleteFoodItem(item._id)}>Delete</button>
-                        <button onClick={()=>router.push('dashboard/'+item._id)} >Edit</button></td>
+    return (
+        <div className="container mt-4">
+            <h1 className="text-center mb-4">Food Items</h1>
+            <table className="table table-striped table-bordered">
+                <thead className="thead-dark">
+                    <tr>
+                        <th>S.N</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Operations</th>
                     </tr>
-    
-                    ))
-                }
-               
-            </tbody>
-        </table>
-
-    </div>)
-}
+                </thead>
+                <tbody>
+                    {
+                        foodItems && foodItems.map((item, key) => (
+                            <tr key={key}>
+                                <td>{key + 1}</td>
+                                <td>{item.name}</td>
+                                <td>{item.price}</td>
+                                <td>{item.description}</td>
+                                <td>
+                                    <img src={item.img_path} alt={item.name} className="img-fluid" style={{ width: "200px", height: "200px", objectFit: "cover" }} />
+                                </td>
+                                <td>
+                                    <button className="btn btn-danger btn-sm me-2" onClick={() => deleteFoodItem(item._id)}>Delete</button>
+                                    <button className="btn btn-primary btn-sm" onClick={() => router.push('dashboard/' + item._id)}>Edit</button>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    );
+};
 
 export default FoodItemList;
